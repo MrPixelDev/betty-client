@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { observer } from "mobx-react-lite";
+import { useContext, useEffect } from "react";
+import { Context } from ".";
+import "./App.css";
+import LoginForm from "./components/AuthComponents/LoginForm";
+import RegistrationForm from "./components/AuthComponents/RegistrationForm";
+import GetUsers from "./components/GetUsers";
 
 function App() {
+  const { authStore } = useContext(Context);
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      authStore.checkAuth();
+    }
+  }, [authStore]);
+
+  if (!authStore.isAuth) {
+    return (
+      <div className="App">
+        <h1>Not authorized</h1>
+        <LoginForm />
+        <br />
+        <RegistrationForm />
+      </div>
+    );
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Authorized</h1>
+      <RegistrationForm />
+      <br />
+      <button onClick={() => authStore.logout()}>Выход</button>
+      <GetUsers />
     </div>
   );
 }
 
-export default App;
+export default observer(App);

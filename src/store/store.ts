@@ -1,44 +1,60 @@
 import { makeAutoObservable } from "mobx";
 import { IUser } from "../models/IUser";
 import AuthService from "../services/AuthService";
+import UsersService from "../services/UsersService";
+import AuthStore from "./authStore";
 
-export default class Store {
-  user = {} as IUser;
-  isAuth = false;
+export default class SomeStore {
+  users = [] as IUser[];
+  // TODO: Erase errors on render iteration
+  error = "";
+  loading = false;
 
-  constructor() {
+  // TODO: MobX MakeAutoObservable, MakeObservable obsidian
+  constructor(private authStore: AuthStore) {
+    this.authStore = authStore;
     makeAutoObservable(this);
   }
 
-  setAuth(bool: boolean) {
-    this.isAuth = bool;
+  setUsers(users: IUser[]) {
+    this.users = [...users];
   }
 
-  setUser(user: IUser) {
-    this.user = user;
+  setError(error: string) {
+    this.error = error;
   }
 
-  async login(username: string, password: string) {
+  setLoading(bool: boolean) {
+    this.loading = bool;
+  }
+
+  async getUsers() {
+    this.setLoading(true);
     try {
-      const response = await AuthService.login(username, password);
-      localStorage.setItem("token", response.data.accessToken);
-      this.setAuth(true);
-      this.setUser(response.data.user);
+      const response = await UsersService.getUsers();
+      this.setUsers(response.data);
+    } catch (e: any) {
+      if (e.response.status === 401) {
+        this.authStore.logout();
+      }
+    }
+    this.setLoading(false);
+  }
+
+  async register(username: string, password: string) {
+    this.setLoading(true);
+    try {
+      const response = await AuthService.register(username, password);
+      if (response.status === 201) {
+        window.alert(
+          `Пользователь ${response.data.username} успешно зарегистрирован`
+        );
+      }
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
+      this.setError(e.response?.data?.message);
     }
-  }
-
-  async logout() {
-    try {
-      await AuthService.logout();
-      localStorage.removeItem("token");
-      this.setAuth(false);
-      this.setUser({} as IUser);
-    } catch (e: any) {
-      console.log(e);
-      console.log(e.response?.data?.message);
-    }
+    this.setLoading(false);
   }
 }

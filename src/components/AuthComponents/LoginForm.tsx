@@ -1,38 +1,38 @@
-import React, { FC, useContext, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { FC, useContext } from "react";
 import { Context } from "../..";
+import useInput from "../../hooks/useInput";
 
 const LoginForm: FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { store } = useContext(Context);
+  const { authStore } = useContext(Context);
+
+  const username = useInput("", { isEmpty: true });
+  const password = useInput("", { isEmpty: true });
 
   return (
     <div className="input-form input-form__login-form">
       <input
-        onChange={(e) => {
-          setUsername(e.target.value);
-        }}
-        value={username}
+        value={username.value}
+        onChange={username.onChange}
         type="text"
         placeholder="Имя пользователя"
       />
       <input
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-        value={password}
+        value={password.value}
+        onChange={password.onChange}
         type="password"
         placeholder="Пароль"
       />
       <button
-        onClick={() => {
-          store.isAuth ? store.logout() : store.login(username, password);
+        disabled={username.isEmpty || password.isEmpty}
+        onClick={async () => {
+          await authStore.login(username.value, password.value);
         }}
       >
-        {store.isAuth ? "Выход" : "Логин"}
+        Логин
       </button>
     </div>
   );
 };
 
-export default LoginForm;
+export default observer(LoginForm);
