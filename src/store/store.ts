@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
 import { IUser } from "../models/IUser";
-import AuthService from "../services/AuthService";
 import UsersService from "../services/UsersService";
 import AuthStore from "./authStore";
 
@@ -44,7 +43,7 @@ export default class SomeStore {
   async register(username: string, password: string) {
     this.setLoading(true);
     try {
-      const response = await AuthService.register(username, password);
+      const response = await UsersService.register(username, password);
       if (response.status === 201) {
         window.alert(
           `Пользователь ${response.data.username} успешно зарегистрирован`
