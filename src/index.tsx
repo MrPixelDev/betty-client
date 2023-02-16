@@ -6,6 +6,7 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { IStoresObject } from "./models/IStore";
 import { initStores } from "./store/initStores";
+import { SnackbarProvider } from "notistack";
 
 const stores = initStores();
 
@@ -19,7 +20,9 @@ root.render(
   <React.StrictMode>
     {/* Context Provider needs value that it provides to children */}
     <Context.Provider value={stores}>
-      <App />
+      <SnackbarProvider maxSnack={3}>
+        <App />
+      </SnackbarProvider>
     </Context.Provider>
   </React.StrictMode>
 );
