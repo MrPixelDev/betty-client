@@ -3,6 +3,9 @@ import { IUser } from "../models/IUser";
 import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
 import AuthService from "../services/AuthService";
+import SnackStore from "./snackStore";
+import { IAuthSites } from "../models/IAuth";
+import SymEncryptService from "../services/SymEncryptService";
 
 export default class AuthStore {
   user = {} as IUser;
@@ -11,7 +14,7 @@ export default class AuthStore {
   loading = false;
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
-  constructor() {
+  constructor(private snackStore: SnackStore) {
     makeAutoObservable(this);
   }
 
@@ -40,7 +43,7 @@ export default class AuthStore {
   }
 
   // TODO: Loading Decorator
-  async login(username: string, password: string) {
+  async login(username: string, password: string, site?: keyof IAuthSites) {
     this.setLoading(true);
     try {
       const response = await AuthService.login(username, password);
@@ -50,12 +53,14 @@ export default class AuthStore {
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
-      this.setError(e.response?.data?.message);
+      // this.setError(e.response?.data?.message);
+      this.snackStore.setSnackVariant("error");
+      this.snackStore.setSnackMessage(e.response?.data?.message);
     }
     this.setLoading(false);
   }
 
-  async logout() {
+  async logout(site?: keyof IAuthSites) {
     this.setLoading(true);
     try {
       this.removeToken();
@@ -64,12 +69,14 @@ export default class AuthStore {
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
-      this.setError(e.response?.data?.message);
+      // this.setError(e.response?.data?.message);
+      this.snackStore.setSnackVariant("error");
+      this.snackStore.setSnackMessage(e.response?.data?.message);
     }
     this.setLoading(false);
   }
 
-  async checkAuth() {
+  async checkAuth(site?: keyof IAuthSites) {
     this.setLoading(true);
     try {
       const response = await AuthService.checkAuth();
@@ -80,6 +87,8 @@ export default class AuthStore {
       await this.logout();
       console.log(e);
       console.log(e.response?.data?.message);
+      this.snackStore.setSnackVariant("error");
+      this.snackStore.setSnackMessage(e.response?.data?.message);
     }
     this.setLoading(false);
   }

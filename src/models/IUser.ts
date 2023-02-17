@@ -1,3 +1,5 @@
+import { ICipher } from "./IAuth";
+
 export interface IUser {
   id: Number;
   username: string;
@@ -10,5 +12,12 @@ export interface IUser {
 
 export interface IUserDto {
   username: string;
+  // cipherObject: ICipher;
   password: string;
+}
+
+export interface IUserApiDto {
+  username: string;
+  password: string;
+  site: string;
 }

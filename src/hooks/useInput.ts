@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const useValidation = (value: any, validations: any) => {
   const [isEmpty, setEmpty] = useState(true);
+  const [isEmail, setEmail] = useState(true);
   const [inputValid, setInputValid] = useState(false);
 
   useEffect(() => {
@@ -10,16 +11,28 @@ const useValidation = (value: any, validations: any) => {
         case "isEmpty":
           value ? setEmpty(false) : setEmpty(true);
           break;
+        case "isEmail":
+          setEmail(
+            value.match(
+              /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+          );
+          break;
       }
     }
   }, [value, validations]);
 
   useEffect(() => {
     isEmpty ? setInputValid(false) : setInputValid(true);
-  }, [isEmpty]);
+  }, [isEmpty, isEmail]);
+
+  useEffect(() => {
+    isEmail ? setInputValid(true) : setInputValid(false);
+  }, [isEmail]);
 
   return {
     isEmpty,
+    isEmail,
     inputValid,
   };
 };

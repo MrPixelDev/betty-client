@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, MouseEvent, useContext, useState, useEffect } from "react";
+import { FC, useContext } from "react";
 import { Context } from "../..";
 import useInput from "../../hooks/useInput";
 import {
@@ -13,24 +13,14 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { useSnackbar } from "notistack";
-import useNotistackSnackbar from "../../hooks/useNotistackSnackbar";
+import useShowPassword from "../../hooks/useShowPassword";
 
 const RegistrationForm: FC = observer(() => {
-  const { store } = useContext(Context);
+  const { userStore } = useContext(Context);
 
   const username = useInput("", { isEmpty: true });
   const password = useInput("", { isEmpty: true });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  useNotistackSnackbar(store);
-
-  const handleClickShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
-
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const showPassword = useShowPassword(false);
 
   return (
     <Container maxWidth="lg" className="form registrationForm">
@@ -46,18 +36,18 @@ const RegistrationForm: FC = observer(() => {
         <InputLabel htmlFor="password">Пароль</InputLabel>
         <OutlinedInput
           id="password_register"
-          type={showPassword ? "text" : "password"}
+          type={showPassword.state ? "text" : "password"}
           value={password.value}
           onChange={password.onChange}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
+                onClick={showPassword.handleClickShowPassword}
+                onMouseDown={showPassword.handleMouseDownPassword}
                 edge="end"
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
+                {showPassword.state ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
@@ -68,9 +58,9 @@ const RegistrationForm: FC = observer(() => {
       <LoadingButton
         disabled={username.isEmpty || password.isEmpty}
         onClick={() => {
-          store.register(username.value, password.value);
+          userStore.register(username.value, password.value);
         }}
-        loading={store.loading}
+        loading={userStore.loading}
         loadingIndicator="Подождите..."
         variant="outlined"
       >

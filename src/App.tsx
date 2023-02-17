@@ -1,34 +1,62 @@
 import { observer } from "mobx-react-lite";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from ".";
 import LoginForm from "./components/AuthComponents/LoginForm";
 import RegistrationForm from "./components/AuthComponents/RegistrationForm";
 import GetUsers from "./components/GetUsers";
+import MainPage from "./components/MainPage/MainPage";
+import useNotistackSnackbar from "./hooks/useNotistackSnackbar";
+import { Container } from "@mui/material";
+import MainTabs from "./components/MainTabs";
 
 function App() {
   const { authStore } = useContext(Context);
+  const [authChecked, setAuthChecked] = useState(false);
+  useNotistackSnackbar();
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       authStore.checkAuth();
     }
+    setAuthChecked(true);
   }, [authStore]);
 
-  if (!authStore.isAuth) {
+  if (!authChecked) {
+    return <></>;
+  }
+
+  if (!authStore.isAuth || !authChecked) {
     return (
       <div className="app">
-        <LoginForm />
-        <br />
-        <RegistrationForm />
+        <Container
+          className="wrapper"
+          sx={{
+            mt: "1rem",
+            bgcolor: "white",
+          }}
+        >
+          <LoginForm store={authStore} site="main" />
+          <br />
+          <RegistrationForm />
+        </Container>
       </div>
     );
   }
 
   return (
     <div className="app">
-      <RegistrationForm />
-      <br />
-      <button onClick={() => authStore.logout()}>Выход</button>
-      <GetUsers />
+      <Container
+        className="wrapper"
+        sx={{
+          mt: "1rem",
+          bgcolor: "white",
+        }}
+      >
+        <MainTabs />
+        <br />
+        <button onClick={() => authStore.logout()}>Выход</button>
+        <GetUsers />
+      </Container>
     </div>
   );
 }

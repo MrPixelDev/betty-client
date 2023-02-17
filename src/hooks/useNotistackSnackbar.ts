@@ -1,14 +1,18 @@
-import { useEffect } from "react";
-import SomeStore from "../store/store";
+import { useContext, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import AuthStore from "../store/authStore";
+import { Context } from "..";
 
-export default function useNotistackSnackbar(store: SomeStore | AuthStore) {
+export default function useNotistackSnackbar() {
+  const { snackStore } = useContext(Context);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if (store.error) {
-      enqueueSnackbar(store.error, { variant: "error" });
-      store.setError("");
+    if (snackStore.snackMessage) {
+      enqueueSnackbar(snackStore.snackMessage, {
+        preventDuplicate: true,
+        autoHideDuration: 3000,
+        variant: snackStore.variant,
+      });
+      snackStore.removeSnack();
     }
-  }, [store.error]);
+  }, [snackStore.snackMessage]);
 }

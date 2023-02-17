@@ -1,7 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { MouseEvent, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { Context } from "../..";
 import useInput from "../../hooks/useInput";
+import useShowPassword from "../../hooks/useShowPassword";
 import {
   Container,
   TextField,
@@ -13,28 +14,28 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import useNotistackSnackbar from "../../hooks/useNotistackSnackbar";
+import { IAuthDto } from "../../models/IAuth";
 
-const LoginForm = observer(() => {
-  const { authStore } = useContext(Context);
+const LoginForm: FC<IAuthDto> = observer((props) => {
+  // const { authStore } = useContext(Context);
+  const store = props.store;
+  const validations = Object.create({ isEmpty: true });
 
-  const username = useInput("", { isEmpty: true });
+  switch (props.site) {
+    case "si":
+    case "bet":
+      validations.isEmail = true;
+      break;
+  }
+
+  const username = useInput("", validations);
   const password = useInput("", { isEmpty: true });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  useNotistackSnackbar(authStore);
-
-  const handleClickShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
-
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const showPassword = useShowPassword(false);
 
   return (
     <Container maxWidth="lg" className="form loginForm">
       <TextField
-        id="username"
+        id={`username_${props.site}`}
         value={username.value}
         onChange={username.onChange}
         label="Логин"
@@ -44,19 +45,19 @@ const LoginForm = observer(() => {
       <FormControl variant="outlined">
         <InputLabel htmlFor="password">Пароль</InputLabel>
         <OutlinedInput
-          id="password"
-          type={showPassword ? "text" : "password"}
+          id={`password_${props.site}`}
+          type={showPassword.state ? "text" : "password"}
           value={password.value}
           onChange={password.onChange}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
+                onClick={showPassword.handleClickShowPassword}
+                onMouseDown={showPassword.handleMouseDownPassword}
                 edge="end"
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
+                {showPassword.state ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
@@ -65,11 +66,11 @@ const LoginForm = observer(() => {
         />
       </FormControl>
       <LoadingButton
-        disabled={username.isEmpty || password.isEmpty}
+        disabled={username.isEmpty || !username.isEmail || password.isEmpty}
         onClick={async () => {
-          await authStore.login(username.value, password.value);
+          await store.login(username.value, password.value, props.site);
         }}
-        loading={authStore.loading}
+        loading={store.loading}
         loadingIndicator="Вход..."
         variant="outlined"
       >

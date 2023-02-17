@@ -1,13 +1,23 @@
 import { IStoresObject } from "../models/IStore";
 import AuthStore from "./authStore";
-import SomeStore from "./store";
+import SettingsStore from "./settingsStore";
+import SnackStore from "./snackStore";
+import TerminalStore from "./terminalStore";
+import UserStore from "./userStore";
 
 export function initStores(): IStoresObject {
-  const authStore = new AuthStore();
-  const store = new SomeStore(authStore);
+  const snackStore = new SnackStore();
+  const authStore = new AuthStore(snackStore);
+  const sideAuthStore = new AuthStore(snackStore);
+  const userStore = new UserStore(authStore, snackStore);
+  const terminalStore = new TerminalStore(snackStore);
+  const settingsStore = new SettingsStore(snackStore);
 
   return {
-    store,
+    userStore,
     authStore,
+    terminalStore,
+    settingsStore,
+    snackStore,
   };
 }

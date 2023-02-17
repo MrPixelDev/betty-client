@@ -3,15 +3,15 @@ import { FC, useContext } from "react";
 import { Context } from "..";
 
 const LoginForm: FC = () => {
-  const { store } = useContext(Context);
+  const { userStore } = useContext(Context);
   return (
     <div>
       <br />
-      <button onClick={() => store.getUsers()}>
+      <button onClick={() => userStore.getUsers()}>
         Получить список пользователей
       </button>
       <ul>
-        {store.users.map((v) => (
+        {userStore.users.map((v) => (
           <li key={`${v.id}`}>{JSON.stringify(v)}</li>
         ))}
       </ul>

@@ -1,8 +1,9 @@
 import server from "../http";
 import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
-// import * as bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import { IUserDto } from "../models/IUser";
+import { ICipher } from "../models/IAuth";
 
 export default class AuthService {
   static async login(
@@ -10,6 +11,8 @@ export default class AuthService {
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
     // const hashPW = await this.hashPassword(password);
+    // const hashedPassword = await bcrypt.hash(password, 5);
+    // console.log("login", hashedPassword);
     const userDto: IUserDto = {
       username,
       password,
