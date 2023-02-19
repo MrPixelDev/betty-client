@@ -10,6 +10,7 @@ const server = axios.create({
 // interceptors of axios obsidian
 server.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  console.log(config);
   return config;
 });
 

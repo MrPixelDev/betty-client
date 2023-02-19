@@ -6,13 +6,17 @@ export interface ICipher {
   iv: Uint8Array;
 }
 
-export interface IAuthSites {
-  main: boolean;
-  si: boolean;
-  bet: boolean;
+// // TODO: Enum with ID
+
+export enum SiteEnum {
+  MAIN = "main",
+  SI14 = "si14",
+  FTFSOOBET = "ftfsoobet",
+  FONBET = "fonbet",
 }
 
+// TODO: Rename
 export interface IAuthDto {
   store: AuthStore | UserStore;
-  site: keyof IAuthSites;
+  site: SiteEnum;
 }

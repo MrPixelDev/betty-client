@@ -12,7 +12,7 @@ const LoginForm: FC = () => {
       </button>
       <ul>
         {userStore.users.map((v) => (
-          <li key={`${v.id}`}>{JSON.stringify(v)}</li>
+          <li key={`${v.userId}`}>{JSON.stringify(v)}</li>
         ))}
       </ul>
     </div>

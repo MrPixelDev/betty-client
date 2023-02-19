@@ -8,6 +8,7 @@ import MainPage from "./components/MainPage/MainPage";
 import useNotistackSnackbar from "./hooks/useNotistackSnackbar";
 import { Container } from "@mui/material";
 import MainTabs from "./components/MainTabs";
+import { SiteEnum } from "./models/IAuth";
 
 function App() {
   const { authStore } = useContext(Context);
@@ -35,7 +36,7 @@ function App() {
             bgcolor: "white",
           }}
         >
-          <LoginForm store={authStore} site="main" />
+          <LoginForm store={authStore} site={SiteEnum.MAIN} />
           <br />
           <RegistrationForm />
         </Container>

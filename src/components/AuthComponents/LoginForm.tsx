@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { IAuthDto } from "../../models/IAuth";
+import { IAuthDto, SiteEnum } from "../../models/IAuth";
 
 const LoginForm: FC<IAuthDto> = observer((props) => {
   // const { authStore } = useContext(Context);
@@ -22,8 +22,8 @@ const LoginForm: FC<IAuthDto> = observer((props) => {
   const validations = Object.create({ isEmpty: true });
 
   switch (props.site) {
-    case "si":
-    case "bet":
+    case SiteEnum.SI14:
+    case SiteEnum.FTFSOOBET:
       validations.isEmail = true;
       break;
   }

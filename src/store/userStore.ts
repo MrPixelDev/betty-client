@@ -1,31 +1,38 @@
 import { makeAutoObservable } from "mobx";
-import { IAuthSites } from "../models/IAuth";
-import { IUser } from "../models/IUser";
-import SymEncryptService from "../services/SymEncryptService";
+import { SiteEnum } from "../models/IAuth";
+import { IUser, TUser } from "../models/IUser";
+import AuthService from "../services/AuthService";
 import UsersService from "../services/UsersService";
 import AuthStore from "./authStore";
 import SnackStore from "./snackStore";
 
 interface IUsersObj {
-  site: keyof IAuthSites;
+  site: SiteEnum;
   user: IUser;
 }
+
+export interface ISiteContext {
+  [key: string]: number;
+}
+
+export type IAuthSites = {
+  [value in SiteEnum]: boolean;
+};
 
 export default class UserStore {
   users = [] as IUser[];
   usersObj = [] as IUsersObj[];
+  siteContext = {} as ISiteContext;
   // TODO: Erase errors on render iteration
   isAuth = {
-    si: false,
-    bet: false,
+    si14: false,
+    ftfsoobet: false,
   } as IAuthSites;
   error = "";
   loading = false;
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
   constructor(private authStore: AuthStore, private snackStore: SnackStore) {
-    this.authStore = authStore;
-    this.snackStore = snackStore;
     makeAutoObservable(this);
   }
 
@@ -45,11 +52,15 @@ export default class UserStore {
     this.loading = bool;
   }
 
-  setAuth(site: keyof IAuthSites, bool: boolean) {
+  setAuth(site: SiteEnum, bool: boolean) {
     this.isAuth[site] = bool;
   }
 
-  getUserBySite(site: keyof IAuthSites) {
+  setSiteContext(site: SiteEnum, pageIndex: number) {
+    this.siteContext[site] = pageIndex;
+  }
+
+  getUserBySite(site: SiteEnum) {
     return this.usersObj.find((v) => v.site === site)?.user;
   }
 
@@ -68,10 +79,11 @@ export default class UserStore {
     this.setLoading(false);
   }
 
+  // TODO: 401
   async register(username: string, password: string) {
     this.setLoading(true);
     try {
-      const response = await UsersService.register(username, password);
+      const response = await UsersService.register({ username, password });
       if (response.status === 201) {
         this.snackStore.setSnackVariant("success");
         this.snackStore.setSnackMessage("Пользователь успешно зарегистрирован");
@@ -86,43 +98,38 @@ export default class UserStore {
     this.setLoading(false);
   }
 
-  async login(username: string, password: string, site: keyof IAuthSites) {
+  // TODO: 401
+  // TODO: site to ENUM
+  async login(username: string, password: string, site: SiteEnum) {
     this.setLoading(true);
-    const user = {
-      id: 1,
-      username,
-      password,
-      banned: false,
-      banReason: "null",
-      createdAt: "1",
-      updatedAt: "1",
-    };
     try {
-      this.addUser([
-        {
-          site,
-          user,
-        },
-      ]);
+      const userId = this.authStore.user.userId;
+      console.log(site);
+      const response = await UsersService.login({
+        userId,
+        username,
+        password,
+        site,
+      });
+      console.log("response", response);
+      this.setSiteContext(site, response.data.pageContext.index);
       this.setAuth(site, true);
-      console.log("login", site, this.usersObj);
     } catch (e) {}
     this.setLoading(false);
   }
 
-  async logout(site: keyof IAuthSites) {
+  // TODO: 401
+  async logout(site: SiteEnum) {
     this.setLoading(true);
     try {
-      this.usersObj = this.usersObj.filter((user) => {
-        return user.site !== site;
-      });
-      console.log("logout", site, this.usersObj);
+      await UsersService.logout(this.siteContext[site]);
       this.setAuth(site, false);
     } catch (e) {}
     this.setLoading(false);
   }
 
-  async checkAuth(username: string, password: string, site: string) {
+  // TODO: 401
+  async checkAuth(username: string, password: string, site: SiteEnum) {
     this.setLoading(true);
     try {
     } catch (e) {}

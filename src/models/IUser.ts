@@ -1,22 +1,26 @@
-import { ICipher } from "./IAuth";
+// import { ICipher } from "./IAuth";
 
 export interface IUser {
-  id: Number;
+  userId: number;
   username: string;
-  password: string;
   banned: Boolean;
   banReason: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
-export interface IUserDto {
+export type TUser = {
+  userId: number;
   username: string;
-  // cipherObject: ICipher;
+  banned: Boolean;
+  banReason: string;
+};
+
+export interface IUserAuthDto {
+  username: string;
   password: string;
 }
 
 export interface IUserApiDto {
+  userId: number;
   username: string;
   password: string;
   site: string;

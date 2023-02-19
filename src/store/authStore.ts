@@ -4,8 +4,7 @@ import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
 import AuthService from "../services/AuthService";
 import SnackStore from "./snackStore";
-import { IAuthSites } from "../models/IAuth";
-import SymEncryptService from "../services/SymEncryptService";
+import { SiteEnum } from "../models/IAuth";
 
 export default class AuthStore {
   user = {} as IUser;
@@ -43,10 +42,11 @@ export default class AuthStore {
   }
 
   // TODO: Loading Decorator
-  async login(username: string, password: string, site?: keyof IAuthSites) {
+  // TODO: Implement some functions in userStore
+  async login(username: string, password: string, site?: SiteEnum) {
     this.setLoading(true);
     try {
-      const response = await AuthService.login(username, password);
+      const response = await AuthService.login({ username, password });
       this.setToken(response);
       this.setAuth(true);
       this.setUser(response.data.user);
@@ -60,7 +60,7 @@ export default class AuthStore {
     this.setLoading(false);
   }
 
-  async logout(site?: keyof IAuthSites) {
+  async logout(site?: SiteEnum) {
     this.setLoading(true);
     try {
       this.removeToken();
@@ -76,7 +76,7 @@ export default class AuthStore {
     this.setLoading(false);
   }
 
-  async checkAuth(site?: keyof IAuthSites) {
+  async checkAuth(site?: SiteEnum) {
     this.setLoading(true);
     try {
       const response = await AuthService.checkAuth();

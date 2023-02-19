@@ -8,7 +8,6 @@ import UserStore from "./userStore";
 export function initStores(): IStoresObject {
   const snackStore = new SnackStore();
   const authStore = new AuthStore(snackStore);
-  const sideAuthStore = new AuthStore(snackStore);
   const userStore = new UserStore(authStore, snackStore);
   const terminalStore = new TerminalStore(snackStore);
   const settingsStore = new SettingsStore(snackStore);

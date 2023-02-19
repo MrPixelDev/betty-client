@@ -19,6 +19,7 @@ import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import LoginForm from "../AuthComponents/LoginForm";
 import BlockHeader from "../BlockElements/BlockHeader";
 import { Context } from "../..";
+import { SiteEnum } from "../../models/IAuth";
 
 const ProfilePage: FC = observer((...props) => {
   const { userStore } = useContext(Context);
@@ -67,19 +68,18 @@ const ProfilePage: FC = observer((...props) => {
   return (
     <Container>
       <BlockHeader title="Si14bet"></BlockHeader>
-      {!userStore.isAuth.si ? (
-        <LoginForm store={userStore} site="si" />
+      {!userStore.isAuth[SiteEnum.SI14] ? (
+        <LoginForm store={userStore} site={SiteEnum.SI14} />
       ) : (
         <Container>
           {" "}
           <Box>
             <span>Вход выполнен</span>
-            <Box>{userStore.getUserBySite("si")?.username}</Box>
-            <Box>{userStore.getUserBySite("si")?.password}</Box>
+            <Box>{userStore.getUserBySite(SiteEnum.SI14)?.username}</Box>
           </Box>
           <LoadingButton
             onClick={async () => {
-              await userStore.logout("si");
+              await userStore.logout(SiteEnum.SI14);
             }}
             loading={userStore.loading}
             loadingIndicator="Выход..."
@@ -91,19 +91,18 @@ const ProfilePage: FC = observer((...props) => {
       )}
       <br />
       <BlockHeader title="525600"></BlockHeader>
-      {!userStore.isAuth.bet ? (
-        <LoginForm store={userStore} site="bet" />
+      {!userStore.isAuth[SiteEnum.FTFSOOBET] ? (
+        <LoginForm store={userStore} site={SiteEnum.FTFSOOBET} />
       ) : (
         <Container>
           {" "}
           <Box>
             <span>Вход выполнен</span>
-            <Box>{userStore.getUserBySite("bet")?.username}</Box>
-            <Box>{userStore.getUserBySite("bet")?.password}</Box>
+            <Box>{userStore.getUserBySite(SiteEnum.FTFSOOBET)?.username}</Box>
           </Box>
           <LoadingButton
             onClick={async () => {
-              await userStore.logout("bet");
+              await userStore.logout(SiteEnum.FTFSOOBET);
             }}
             loading={userStore.loading}
             loadingIndicator="Выход..."

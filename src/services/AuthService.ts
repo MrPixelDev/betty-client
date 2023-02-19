@@ -1,23 +1,20 @@
 import server from "../http";
 import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
-import * as bcrypt from "bcryptjs";
-import { IUserDto } from "../models/IUser";
-import { ICipher } from "../models/IAuth";
+import { IUserAuthDto } from "../models/IUser";
 
 export default class AuthService {
   static async login(
-    username: string,
-    password: string
+    userAuthDto: IUserAuthDto
   ): Promise<AxiosResponse<AuthResponse>> {
     // const hashPW = await this.hashPassword(password);
     // const hashedPassword = await bcrypt.hash(password, 5);
     // console.log("login", hashedPassword);
-    const userDto: IUserDto = {
-      username,
-      password,
-    };
-    const res = server.post<AuthResponse>("/auth/login", userDto);
+    // const userAuthDto: IUserAuthDto = {
+    //   username,
+    //   password,
+    // };
+    const res = server.post<AuthResponse>("/auth/login", userAuthDto);
     return res;
   }
 
