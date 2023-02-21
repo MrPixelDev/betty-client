@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useState } from "react";
+import { FC, SyntheticEvent, useContext, useState } from "react";
 import MainPage from "./MainPage/MainPage";
 import {
   Box,
@@ -17,6 +17,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import ProfilePage from "./ProfilePage/ProfilePage";
+import { Context } from "..";
 
 const MainTabs: FC = observer((...props) => {
   const [tab, setTab] = useState("main");

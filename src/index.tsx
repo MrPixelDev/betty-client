@@ -7,8 +7,11 @@ import reportWebVitals from "./reportWebVitals";
 import { IStoresObject } from "./models/IStore";
 import { initStores } from "./store/initStores";
 import { SnackbarProvider } from "notistack";
+// import IdbService, { IDBConfig } from "./services/IdbServise";
+// import { initDB } from "react-indexed-db";
 
 const stores = initStores();
+// initDB(IDBConfig);
 
 // Context API from react, to use init stores in any part of app
 export const Context = createContext<IStoresObject>(stores);

@@ -5,15 +5,18 @@ import { AuthResponse } from "../models/response/AuthResponse";
 import AuthService from "../services/AuthService";
 import SnackStore from "./snackStore";
 import { SiteEnum } from "../models/IAuth";
+import LoadingStore from "./loadingStore";
 
 export default class AuthStore {
   user = {} as IUser;
   isAuth = false;
   error = "";
-  loading = false;
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
-  constructor(private snackStore: SnackStore) {
+  constructor(
+    private loadingStore: LoadingStore,
+    private snackStore: SnackStore
+  ) {
     makeAutoObservable(this);
   }
 
@@ -29,10 +32,6 @@ export default class AuthStore {
     this.error = error;
   }
 
-  setLoading(bool: boolean) {
-    this.loading = bool;
-  }
-
   setToken(response: AxiosResponse<AuthResponse, any>) {
     localStorage.setItem("token", response.data.accessToken);
   }
@@ -44,7 +43,7 @@ export default class AuthStore {
   // TODO: Loading Decorator
   // TODO: Implement some functions in userStore
   async login(username: string, password: string, site?: SiteEnum) {
-    this.setLoading(true);
+    this.loadingStore.setLoading(true);
     try {
       const response = await AuthService.login({ username, password });
       this.setToken(response);
@@ -57,11 +56,11 @@ export default class AuthStore {
       this.snackStore.setSnackVariant("error");
       this.snackStore.setSnackMessage(e.response?.data?.message);
     }
-    this.setLoading(false);
+    this.loadingStore.setLoading(false);
   }
 
   async logout(site?: SiteEnum) {
-    this.setLoading(true);
+    this.loadingStore.setLoading(true);
     try {
       this.removeToken();
       this.setAuth(false);
@@ -73,11 +72,11 @@ export default class AuthStore {
       this.snackStore.setSnackVariant("error");
       this.snackStore.setSnackMessage(e.response?.data?.message);
     }
-    this.setLoading(false);
+    this.loadingStore.setLoading(false);
   }
 
   async checkAuth(site?: SiteEnum) {
-    this.setLoading(true);
+    this.loadingStore.setLoading(true);
     try {
       const response = await AuthService.checkAuth();
       this.setToken(response);
@@ -90,6 +89,6 @@ export default class AuthStore {
       this.snackStore.setSnackVariant("error");
       this.snackStore.setSnackMessage(e.response?.data?.message);
     }
-    this.setLoading(false);
+    this.loadingStore.setLoading(false);
   }
 }

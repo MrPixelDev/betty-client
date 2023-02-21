@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useState } from "react";
+import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
 import RegistrationForm from "../AuthComponents/RegistrationForm";
@@ -19,8 +19,13 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { Context } from "../..";
+import { SiteEnum } from "../../models/IAuth";
+// import { useIndexedDB } from "react-indexed-db";
 
 const MainPage: FC = observer((...props) => {
+  const { terminalStore } = useContext(Context);
+
   return (
     <Grid container>
       <Grid

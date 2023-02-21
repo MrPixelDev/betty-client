@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useState } from "react";
+import { FC, SyntheticEvent, useContext, useState } from "react";
 import {
   Box,
   Tabs,
@@ -22,8 +22,11 @@ import {
   Pause,
 } from "@mui/icons-material";
 import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { Context } from "../../..";
 
 const ControlButtons: FC = observer((...props) => {
+  const { loadingStore, terminalStore } = useContext(Context);
+
   return (
     <Container>
       <Grid
@@ -41,6 +44,7 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
+            disabled={!terminalStore.state.stateId}
             endIcon={<Send />}
             loadingPosition={"end"}
             variant="contained"
@@ -61,6 +65,7 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
+            disabled={!terminalStore.state.stateId}
             endIcon={<Stop />}
             loadingPosition={"end"}
             variant="contained"
@@ -71,6 +76,7 @@ const ControlButtons: FC = observer((...props) => {
         </Grid>
         <Grid item={true} xs={12} md={6}>
           <LoadingButton
+            disabled={!terminalStore.state.stateId}
             endIcon={<Pause />}
             loadingPosition={"end"}
             variant="contained"

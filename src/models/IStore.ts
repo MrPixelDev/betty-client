@@ -1,4 +1,5 @@
 import AuthStore from "../store/authStore";
+import LoadingStore from "../store/loadingStore";
 import SettingsStore from "../store/settingsStore";
 import SnackStore from "../store/snackStore";
 import TerminalStore from "../store/terminalStore";
@@ -13,6 +14,7 @@ export interface ISnackStore {
 }
 
 export interface IStoresObject {
+  loadingStore: LoadingStore;
   snackStore: SnackStore;
   authStore: AuthStore;
   userStore: UserStore;

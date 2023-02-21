@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useContext, useState } from "react";
+import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
 import {
   Box,
   Tabs,
@@ -20,9 +20,11 @@ import LoginForm from "../AuthComponents/LoginForm";
 import BlockHeader from "../BlockElements/BlockHeader";
 import { Context } from "../..";
 import { SiteEnum } from "../../models/IAuth";
+import LoadingStore from "../../store/loadingStore";
+import { autorun } from "mobx";
 
 const ProfilePage: FC = observer((...props) => {
-  const { userStore } = useContext(Context);
+  const { terminalStore, loadingStore } = useContext(Context);
   // const [authChecked, setAuthChecked] = useState(false);
   // useNotistackSnackbar();
 
@@ -68,20 +70,19 @@ const ProfilePage: FC = observer((...props) => {
   return (
     <Container>
       <BlockHeader title="Si14bet"></BlockHeader>
-      {!userStore.isAuth[SiteEnum.SI14] ? (
-        <LoginForm store={userStore} site={SiteEnum.SI14} />
+      {!terminalStore.siteContext[SiteEnum.SI14] ? (
+        <LoginForm store={terminalStore} site={SiteEnum.SI14} />
       ) : (
         <Container>
           {" "}
           <Box>
             <span>Вход выполнен</span>
-            <Box>{userStore.getUserBySite(SiteEnum.SI14)?.username}</Box>
           </Box>
           <LoadingButton
             onClick={async () => {
-              await userStore.logout(SiteEnum.SI14);
+              await terminalStore.logout(SiteEnum.SI14);
             }}
-            loading={userStore.loading}
+            loading={loadingStore.loading}
             loadingIndicator="Выход..."
             variant="outlined"
           >
@@ -91,20 +92,20 @@ const ProfilePage: FC = observer((...props) => {
       )}
       <br />
       <BlockHeader title="525600"></BlockHeader>
-      {!userStore.isAuth[SiteEnum.FTFSOOBET] ? (
-        <LoginForm store={userStore} site={SiteEnum.FTFSOOBET} />
+      {!terminalStore.siteContext[SiteEnum.FTFSOOBET] ? (
+        <LoginForm store={terminalStore} site={SiteEnum.FTFSOOBET} />
       ) : (
         <Container>
           {" "}
           <Box>
             <span>Вход выполнен</span>
-            <Box>{userStore.getUserBySite(SiteEnum.FTFSOOBET)?.username}</Box>
+            <Box></Box>
           </Box>
           <LoadingButton
             onClick={async () => {
-              await userStore.logout(SiteEnum.FTFSOOBET);
+              await terminalStore.logout(SiteEnum.FTFSOOBET);
             }}
-            loading={userStore.loading}
+            loading={loadingStore.loading}
             loadingIndicator="Выход..."
             variant="outlined"
           >

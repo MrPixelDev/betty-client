@@ -1,4 +1,5 @@
 import AuthStore from "../store/authStore";
+import TerminalStore from "../store/terminalStore";
 import UserStore from "../store/userStore";
 
 export interface ICipher {
@@ -17,6 +18,6 @@ export enum SiteEnum {
 
 // TODO: Rename
 export interface IAuthDto {
-  store: AuthStore | UserStore;
+  store: AuthStore | TerminalStore;
   site: SiteEnum;
 }

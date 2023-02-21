@@ -10,12 +10,13 @@ const server = axios.create({
 // interceptors of axios obsidian
 server.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
-  console.log(config);
+  console.log("send", config);
   return config;
 });
 
 server.interceptors.response.use(
   (config) => {
+    console.log("receive", config);
     return config;
   },
   // TODO: Process obsidian

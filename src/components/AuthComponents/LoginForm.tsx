@@ -17,7 +17,7 @@ import { LoadingButton } from "@mui/lab";
 import { IAuthDto, SiteEnum } from "../../models/IAuth";
 
 const LoginForm: FC<IAuthDto> = observer((props) => {
-  // const { authStore } = useContext(Context);
+  const { loadingStore } = useContext(Context);
   const store = props.store;
   const validations = Object.create({ isEmpty: true });
 
@@ -70,7 +70,7 @@ const LoginForm: FC<IAuthDto> = observer((props) => {
         onClick={async () => {
           await store.login(username.value, password.value, props.site);
         }}
-        loading={store.loading}
+        loading={loadingStore.loading}
         loadingIndicator="Вход..."
         variant="outlined"
       >
