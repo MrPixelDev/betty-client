@@ -2,17 +2,17 @@ import { makeAutoObservable } from "mobx";
 import { IUser } from "../models/IUser";
 import UsersService from "../services/UsersService";
 import AuthStore from "./authStore";
+import LoadingStore from "./loadingStore";
 import SnackStore from "./snackStore";
 
 export default class SettingsStore {
   users = [] as IUser[];
   // TODO: Erase errors on render iteration
   error = "";
-  loading = false;
+  loadingStore = new LoadingStore();
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
   constructor(private snackStore: SnackStore) {
-    this.snackStore = snackStore;
     makeAutoObservable(this);
   }
 
@@ -22,10 +22,6 @@ export default class SettingsStore {
 
   setError(error: string) {
     this.error = error;
-  }
-
-  setLoading(bool: boolean) {
-    this.loading = bool;
   }
 
   // async getUsers() {

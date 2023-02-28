@@ -25,7 +25,7 @@ import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { Context } from "../../..";
 
 const ControlButtons: FC = observer((...props) => {
-  const { loadingStore, terminalStore } = useContext(Context);
+  const { terminalStore } = useContext(Context);
 
   return (
     <Container>
@@ -44,7 +44,7 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
-            disabled={!terminalStore.state.stateId}
+            disabled={terminalStore.currentStrategyId === -1}
             endIcon={<Send />}
             loadingPosition={"end"}
             variant="contained"
@@ -65,7 +65,7 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
-            disabled={!terminalStore.state.stateId}
+            disabled={terminalStore.currentStrategyId === -1}
             endIcon={<Stop />}
             loadingPosition={"end"}
             variant="contained"
@@ -76,7 +76,7 @@ const ControlButtons: FC = observer((...props) => {
         </Grid>
         <Grid item={true} xs={12} md={6}>
           <LoadingButton
-            disabled={!terminalStore.state.stateId}
+            disabled={terminalStore.currentStrategyId === -1}
             endIcon={<Pause />}
             loadingPosition={"end"}
             variant="contained"

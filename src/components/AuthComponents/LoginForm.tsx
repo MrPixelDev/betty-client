@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, useContext } from "react";
-import { Context } from "../..";
+import { FC } from "react";
 import useInput from "../../hooks/useInput";
 import useShowPassword from "../../hooks/useShowPassword";
 import {
@@ -17,7 +16,6 @@ import { LoadingButton } from "@mui/lab";
 import { IAuthDto, SiteEnum } from "../../models/IAuth";
 
 const LoginForm: FC<IAuthDto> = observer((props) => {
-  const { loadingStore } = useContext(Context);
   const store = props.store;
   const validations = Object.create({ isEmpty: true });
 
@@ -70,7 +68,11 @@ const LoginForm: FC<IAuthDto> = observer((props) => {
         onClick={async () => {
           await store.login(username.value, password.value, props.site);
         }}
-        loading={loadingStore.loading}
+        loading={
+          props.site
+            ? store.loadingStore.loadingFrom[props.site]
+            : store.loadingStore.loading
+        }
         loadingIndicator="Вход..."
         variant="outlined"
       >

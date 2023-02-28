@@ -16,7 +16,7 @@ import { LoadingButton } from "@mui/lab";
 import useShowPassword from "../../hooks/useShowPassword";
 
 const RegistrationForm: FC = observer(() => {
-  const { userStore, loadingStore } = useContext(Context);
+  const { userStore } = useContext(Context);
 
   const username = useInput("", { isEmpty: true });
   const password = useInput("", { isEmpty: true });
@@ -60,7 +60,7 @@ const RegistrationForm: FC = observer(() => {
         onClick={() => {
           userStore.register(username.value, password.value);
         }}
-        loading={loadingStore.loading}
+        loading={userStore.loadingStore.loading}
         loadingIndicator="Подождите..."
         variant="outlined"
       >

@@ -23,13 +23,52 @@ export interface ISiteContext {
   [key: string]: IApiAuthDto;
 }
 
+export interface IStock {
+  strategyId: number;
+  result: string;
+  fonbetCf: number;
+  bkCf: number;
+  targetCf: number;
+  obligationSum: number;
+  bkSum: number;
+  potentialBiGain: number;
+  biGain: number;
+  bkGain: number;
+}
+
+export interface IStrategy {
+  strategyId: number;
+  strategyName: string;
+  status: number;
+  sportName: string;
+  league: string;
+  leagueEvent: string;
+  bet: string;
+  obligation: number;
+  marginality: number;
+  stackSize: number;
+  stackFilled: number;
+  stock: IStock[];
+}
+
 export interface IGetStateResponse {
   stateId: number;
-  status: number;
+  strategyList: IStrategy[];
   biBalance: number;
   bkBalance: number;
   betSum: number;
-  stackSize: number;
-  stackFilled: number;
   profit: number;
+}
+
+export interface IAvailableStrategies {
+  bets: {
+    [sportName: string]: {
+      [league: string]: {
+        [leagueEvent: string]: string[];
+      };
+    };
+  };
+  marginalitys: number[];
+  obligations: number[];
+  stackSizes: number[];
 }

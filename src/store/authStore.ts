@@ -6,16 +6,18 @@ import AuthService from "../services/AuthService";
 import SnackStore from "./snackStore";
 import { SiteEnum } from "../models/IAuth";
 import LoadingStore from "./loadingStore";
+import TerminalStore from "./terminalStore";
 
 export default class AuthStore {
   user = {} as IUser;
   isAuth = false;
   error = "";
+  loadingStore = new LoadingStore();
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
   constructor(
-    private loadingStore: LoadingStore,
-    private snackStore: SnackStore
+    private snackStore: SnackStore,
+    private terminalStore: TerminalStore
   ) {
     makeAutoObservable(this);
   }
@@ -34,10 +36,12 @@ export default class AuthStore {
 
   setToken(response: AxiosResponse<AuthResponse, any>) {
     localStorage.setItem("token", response.data.accessToken);
+    localStorage.setItem("userId", this.user.userId.toString());
   }
 
   removeToken() {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
   }
 
   // TODO: Loading Decorator
@@ -46,15 +50,13 @@ export default class AuthStore {
     this.loadingStore.setLoading(true);
     try {
       const response = await AuthService.login({ username, password });
+      this.setUser(response.data.user);
       this.setToken(response);
       this.setAuth(true);
-      this.setUser(response.data.user);
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
-      // this.setError(e.response?.data?.message);
-      this.snackStore.setSnackVariant("error");
-      this.snackStore.setSnackMessage(e.response?.data?.message);
+      this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);
   }
@@ -68,9 +70,7 @@ export default class AuthStore {
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
-      // this.setError(e.response?.data?.message);
-      this.snackStore.setSnackVariant("error");
-      this.snackStore.setSnackMessage(e.response?.data?.message);
+      this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);
   }
@@ -79,16 +79,25 @@ export default class AuthStore {
     this.loadingStore.setLoading(true);
     try {
       const response = await AuthService.checkAuth();
+      this.setUser(response.data.user);
       this.setToken(response);
       this.setAuth(true);
-      this.setUser(response.data.user);
     } catch (e: any) {
       await this.logout();
       console.log(e);
       console.log(e.response?.data?.message);
-      this.snackStore.setSnackVariant("error");
-      this.snackStore.setSnackMessage(e.response?.data?.message);
+      this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);
   }
+
+  // closePages() {
+  //   try {
+  //     for (let site of Object.values(SiteEnum)) {
+  //       this.terminalStore.logout(site);
+  //     }
+  //   } catch (e: any) {
+  //     this.snackStore.setSnack("error", e.response?.data?.message);
+  //   }
+  // }
 }

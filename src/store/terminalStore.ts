@@ -2,57 +2,75 @@ import { makeAutoObservable } from "mobx";
 import { SiteEnum } from "../models/IAuth";
 import {
   IApiAuthDto,
+  IAvailableStrategies,
   IGetStateDto,
   IGetStateResponse,
   ISiteContext,
 } from "../models/ITerminal";
-import { IUser } from "../models/IUser";
 import ApiService from "../services/ApiService";
-import UsersService from "../services/UsersService";
-import AuthStore from "./authStore";
 import LoadingStore from "./loadingStore";
 import SnackStore from "./snackStore";
+import StrategyStore from "./strategyStore";
 
 export default class TerminalStore {
   siteContext = {} as ISiteContext;
   stateDto = {} as IGetStateDto;
   state = {} as IGetStateResponse;
+  currentStrategyId: number = -1;
   // TODO: Erase errors on render iteration
   error = "";
+  loadingStore = new LoadingStore();
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
   constructor(
-    private loadingStore: LoadingStore,
     private snackStore: SnackStore,
-    private authStore: AuthStore
+    private strategyStore: StrategyStore
   ) {
-    if (!this.state.stateId) {
-      const sessionState = sessionStorage.getItem("state");
-      if (sessionState) {
-        const jsonState = JSON.parse(sessionState);
-        this.setState(jsonState);
-      }
-    }
-
-    for (let site of Object.values(SiteEnum)) {
-      if (!this.siteContext[site]) {
-        const sessionSiteContext = sessionStorage.getItem(site);
-        if (sessionSiteContext) {
-          const jsonSessionSiteContext = JSON.parse(sessionSiteContext);
-          this.setSiteContext(jsonSessionSiteContext);
-        }
-      }
-    }
+    this.getStateFromStorage();
+    this.getStrategiesFromStorage();
     makeAutoObservable(this);
+  }
+
+  setCurrentStrategyId(id: number) {
+    this.currentStrategyId = id;
   }
 
   setError(error: string) {
     this.error = error;
   }
 
+  getStateFromStorage() {
+    if (!this.state.stateId) {
+      const localState = localStorage.getItem("state");
+      if (localState) {
+        const jsonState = JSON.parse(localState);
+        this.setState(jsonState);
+      }
+    }
+    for (let site of Object.values(SiteEnum)) {
+      if (!this.siteContext[site]) {
+        const localSiteContext = localStorage.getItem(site);
+        if (localSiteContext) {
+          const jsonlocalSiteContext = JSON.parse(localSiteContext);
+          this.setSiteContext(jsonlocalSiteContext);
+          this.setStateDto(site);
+        }
+      }
+    }
+  }
+
+  getStrategiesFromStorage() {
+    if (this.state.stateId) {
+      const localStrategies = localStorage.getItem("availableStrategies");
+      if (localStrategies) {
+        this.strategyStore.setAvailableStrategies(JSON.parse(localStrategies));
+      }
+    }
+  }
+
   setSiteContext(apiAuthDto: IApiAuthDto) {
     this.siteContext[apiAuthDto.name] = apiAuthDto;
-    sessionStorage.setItem(
+    localStorage.setItem(
       `${apiAuthDto.name}`,
       JSON.stringify(this.siteContext[apiAuthDto.name])
     );
@@ -60,7 +78,7 @@ export default class TerminalStore {
 
   removeSiteContext(site: SiteEnum) {
     delete this.siteContext[site];
-    sessionStorage.removeItem(`${site}`);
+    localStorage.removeItem(`${site}`);
   }
 
   setStateDto(site: SiteEnum) {
@@ -76,24 +94,39 @@ export default class TerminalStore {
 
   setState(state: IGetStateResponse) {
     this.state = state;
-    sessionStorage.setItem("state", JSON.stringify(this.state));
+    localStorage.setItem("state", JSON.stringify(this.state));
+  }
+
+  setStateDtoUserId() {
+    this.stateDto.userId = Number(localStorage.getItem("userId"));
   }
 
   async getState() {
     this.loadingStore.setLoading(true);
-    this.stateDto.userId = this.authStore.user.userId;
-    const response = await ApiService.getState({ ...this.stateDto });
-    console.log(response);
-    this.setState(response.data);
+    console.log("getting state");
+    try {
+      this.setStateDtoUserId();
+      const response = await ApiService.getState({ ...this.stateDto });
+      console.log(response);
+      this.setState(response.data);
+      // await new Promise((res, rej) => {
+      //   setTimeout(() => {
+      //     this.strategyStore.parseStrategies({ ...this.stateDto });
+      //   }, 10000);
+      // });
+    } catch (e: any) {
+      if (e.response.status !== 429)
+        this.snackStore.setSnack("error", e.response?.data?.message);
+    }
     this.loadingStore.setLoading(false);
   }
 
   // TODO: 401
   // TODO: site to ENUM
   async login(username: string, password: string, site: SiteEnum) {
-    this.loadingStore.setLoading(true);
+    this.loadingStore.setLoading(true, site);
     try {
-      const userId = this.authStore.user.userId;
+      const userId = Number(localStorage.getItem("userId"));
       const response = await ApiService.login({
         userId,
         username,
@@ -108,19 +141,25 @@ export default class TerminalStore {
         pageIndex: response.data.pageContext.index,
       });
       this.setStateDto(site);
-    } catch (e) {}
-    this.loadingStore.setLoading(false);
+    } catch (e: any) {
+      this.snackStore.setSnack("error", e.response?.data?.message);
+    }
+    this.loadingStore.setLoading(false, site);
   }
 
   // TODO: 401
   async logout(site: SiteEnum) {
-    this.loadingStore.setLoading(true);
+    this.loadingStore.setLoading(true, site);
+    const siteContext = this.siteContext[site];
+    this.removeSiteContext(site);
+    this.setStateDto(site);
+    this.setState({} as IGetStateResponse);
+    this.strategyStore.setAvailableStrategies({} as IAvailableStrategies);
     try {
-      await ApiService.logout(this.siteContext[site].pageIndex);
-      this.setState({} as IGetStateResponse);
-      this.removeSiteContext(site);
-      this.setStateDto(site);
-    } catch (e) {}
-    this.loadingStore.setLoading(false);
+      await ApiService.logout(siteContext.pageIndex);
+    } catch (e: any) {
+      this.snackStore.setSnack("error", e.response?.data?.message);
+    }
+    this.loadingStore.setLoading(false, site);
   }
 }

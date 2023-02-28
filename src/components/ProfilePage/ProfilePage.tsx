@@ -24,7 +24,7 @@ import LoadingStore from "../../store/loadingStore";
 import { autorun } from "mobx";
 
 const ProfilePage: FC = observer((...props) => {
-  const { terminalStore, loadingStore } = useContext(Context);
+  const { terminalStore } = useContext(Context);
   // const [authChecked, setAuthChecked] = useState(false);
   // useNotistackSnackbar();
 
@@ -80,9 +80,10 @@ const ProfilePage: FC = observer((...props) => {
           </Box>
           <LoadingButton
             onClick={async () => {
+              console.log("LOGOUT");
               await terminalStore.logout(SiteEnum.SI14);
             }}
-            loading={loadingStore.loading}
+            loading={terminalStore.loadingStore.loadingFrom[SiteEnum.SI14]}
             loadingIndicator="Выход..."
             variant="outlined"
           >
@@ -103,9 +104,10 @@ const ProfilePage: FC = observer((...props) => {
           </Box>
           <LoadingButton
             onClick={async () => {
+              console.log("LOGOUT");
               await terminalStore.logout(SiteEnum.FTFSOOBET);
             }}
-            loading={loadingStore.loading}
+            loading={terminalStore.loadingStore.loadingFrom[SiteEnum.FTFSOOBET]}
             loadingIndicator="Выход..."
             variant="outlined"
           >

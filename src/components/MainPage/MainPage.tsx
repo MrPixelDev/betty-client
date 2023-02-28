@@ -24,8 +24,6 @@ import { SiteEnum } from "../../models/IAuth";
 // import { useIndexedDB } from "react-indexed-db";
 
 const MainPage: FC = observer((...props) => {
-  const { terminalStore } = useContext(Context);
-
   return (
     <Grid container>
       <Grid

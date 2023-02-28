@@ -19,6 +19,11 @@ export default class SnackStore {
     this.variant = variant;
   }
 
+  setSnack(variant: VariantType, msg: string): void {
+    this.setSnackVariant(variant);
+    this.setSnackMessage(msg);
+  }
+
   removeSnack(): void {
     this.variant = "default";
     this.snackMessage = "";

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useContext, useState } from "react";
+import io, { Socket } from "socket.io-client";
+import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
 import MainPage from "./MainPage/MainPage";
 import {
   Box,

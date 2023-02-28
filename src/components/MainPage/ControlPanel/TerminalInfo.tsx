@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import io, { Socket } from "socket.io-client";
 import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
 import {
   Box,
@@ -25,23 +26,37 @@ import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { Context } from "../../..";
 import { autorun } from "mobx";
 import BlockHeader from "../../BlockElements/BlockHeader";
+// import { WebSocketContext } from "../../../services/WSService";
+// import socket from "../../../services/WSService";
 
 const TerminalInfo: FC = observer((...props) => {
-  const { loadingStore, terminalStore } = useContext(Context);
+  const [msg, setMsg] = useState<any[]>([]);
+  const { terminalStore } = useContext(Context);
 
-  useEffect(
-    () =>
-      autorun(() => {
-        if (
-          !terminalStore.state.stateId &&
-          terminalStore.stateDto.bi &&
-          terminalStore.stateDto.bk
-        ) {
-          terminalStore.getState();
-        }
-      }),
-    [terminalStore.stateDto, terminalStore.state.stateId, terminalStore]
-  );
+  // useEffect(() => {
+  //   console.log(socket.id);
+
+  //   socket.on("connect", () => {
+  //     console.log("Connected!");
+  //   });
+  //   socket.on("login", (data) => {
+  //     console.log(data);
+  //   });
+  //   socket.on("logout", (data) => {
+  //     console.log(data);
+  //   });
+  //   socket.on("getstate", (data) => {
+  //     console.log(data);
+  //   });
+  //   console.log(socket.hasListeners("login"));
+  //   socket.emit("loginnn", "3123123125135135");
+  //   // return () => {
+  //   //   socket.off("connect");
+  //   //   socket.off("login");
+  //   //   socket.off("logout");
+  //   //   socket.off("getstate");
+  //   // };
+  // });
 
   return (
     <Container
@@ -51,28 +66,24 @@ const TerminalInfo: FC = observer((...props) => {
         minHeight: "200px",
       }}
     >
-      {!terminalStore.state.stateId ? (
-        <Box className="terminalInfo">
-          <span>Залогиньтесь</span>
-        </Box>
-      ) : (
-        <Box className="terminalInfo">
-          <span>Статус: {terminalStore.state.status}</span>
-          <br />
-          <span>Баланс Биржи: {terminalStore.state.biBalance}</span>
-          <br />
-          <span>Баланс БК: {terminalStore.state.bkBalance}</span>
-          <br />
-          <span>Сумма ставок: {terminalStore.state.betSum}</span>
-          <br />
-          <span>Количество в стеке: {terminalStore.state.stackSize}</span>
-          <br />
-          <span>Заполнено в стеке: {terminalStore.state.stackFilled}</span>
-          <br />
-          <span>Прибыль: {terminalStore.state.profit}</span>
-          <br />
-        </Box>
-      )}
+      <Box className="terminalInfo">
+        <span>
+          Баланс Биржи:{" "}
+          {terminalStore.state.biBalance === 0.001
+            ? "Баланс не доступен"
+            : terminalStore.state.biBalance + " $"}
+        </span>
+        <br />
+        <span>
+          Баланс БК:{" "}
+          {terminalStore.state.bkBalance === 0.001
+            ? "Баланс не доступен"
+            : terminalStore.state.bkBalance + " $"}
+        </span>
+        <br />
+        <span>Прибыль: {terminalStore.state.profit} $</span>
+        <br />
+      </Box>
     </Container>
   );
 });

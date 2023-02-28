@@ -3,7 +3,11 @@ import * as bcrypt from "bcryptjs";
 import { AxiosResponse } from "axios";
 import { IUser, IUserApiDto, IUserAuthDto } from "../models/IUser";
 import { ICipher } from "../models/IAuth";
-import { IGetStateDto, IGetStateResponse } from "../models/ITerminal";
+import {
+  IAvailableStrategies,
+  IGetStateDto,
+  IGetStateResponse,
+} from "../models/ITerminal";
 
 export default class ApiService {
   static async login(userApiDto: IUserApiDto): Promise<AxiosResponse<any>> {
@@ -23,5 +27,11 @@ export default class ApiService {
     stateDto: IGetStateDto
   ): Promise<AxiosResponse<IGetStateResponse>> {
     return server.post<any>("/api/getstate", stateDto);
+  }
+
+  static async parseStrategies(
+    stateDto: IGetStateDto
+  ): Promise<AxiosResponse<IAvailableStrategies>> {
+    return server.post<any>("/api/parsestrategies", stateDto);
   }
 }

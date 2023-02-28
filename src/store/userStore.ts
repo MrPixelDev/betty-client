@@ -9,15 +9,11 @@ import SnackStore from "./snackStore";
 
 export default class UserStore {
   users = [] as IUser[];
-
+  loadingStore = new LoadingStore();
   error = "";
 
   // TODO: MobX MakeAutoObservable, MakeObservable obsidian
-  constructor(
-    private loadingStore: LoadingStore,
-    private snackStore: SnackStore,
-    private authStore: AuthStore
-  ) {
+  constructor(private snackStore: SnackStore, private authStore: AuthStore) {
     makeAutoObservable(this);
   }
 
@@ -38,8 +34,7 @@ export default class UserStore {
       if (e.response.status === 401) {
         this.authStore.logout();
       }
-      this.snackStore.setSnackVariant("error");
-      this.snackStore.setSnackMessage(e.response?.data?.message);
+      this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);
   }
@@ -50,15 +45,16 @@ export default class UserStore {
     try {
       const response = await UsersService.register({ username, password });
       if (response.status === 201) {
-        this.snackStore.setSnackVariant("success");
-        this.snackStore.setSnackMessage("Пользователь успешно зарегистрирован");
+        this.snackStore.setSnack(
+          "success",
+          "Пользователь успешно зарегистрирован"
+        );
       }
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
       // this.setError(e.response?.data?.message);
-      this.snackStore.setSnackVariant("error");
-      this.snackStore.setSnackMessage(e.response?.data?.message);
+      this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);
   }
