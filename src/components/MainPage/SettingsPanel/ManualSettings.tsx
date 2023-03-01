@@ -14,7 +14,6 @@ import {
   InputAdornment,
   IconButton,
   Select,
-  SelectChangeEvent,
   MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -34,6 +33,13 @@ const ManualSettings: FC = observer((...props) => {
   const [obligation, setObligation] = useState("");
   const [marginality, setMarginality] = useState("");
   const [stackSize, setStackSize] = useState("");
+
+  const setNull = (n: number) => {
+    const setters = [setBet, setLeagueEvent, setLeague];
+    for (let i = 0; i < n; i++) {
+      setters[i]("");
+    }
+  };
 
   return (
     <Grid
@@ -57,6 +63,7 @@ const ManualSettings: FC = observer((...props) => {
             id="sportName"
             value={sportName}
             onChange={(e) => {
+              setNull(3);
               setSportName(e.target.value);
             }}
           >
@@ -90,6 +97,7 @@ const ManualSettings: FC = observer((...props) => {
             id="league"
             value={league}
             onChange={(e) => {
+              setNull(2);
               setLeague(e.target.value);
             }}
             label="Лига"
@@ -121,6 +129,7 @@ const ManualSettings: FC = observer((...props) => {
             id="leagueEvent"
             value={leagueEvent}
             onChange={(e) => {
+              setNull(1);
               setLeagueEvent(e.target.value);
             }}
             label="Событие"
