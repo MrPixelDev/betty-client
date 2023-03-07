@@ -83,9 +83,13 @@ const RegistrationForm: FC = observer(() => {
         </Select>
       </FormControl>
       <LoadingButton
-        disabled={username.isEmpty || password.isEmpty}
+        disabled={username.isEmpty || password.isEmpty || !role}
         onClick={() => {
-          userStore.register(username.value, password.value);
+          userStore.register({
+            username: username.value,
+            password: password.value,
+            role,
+          });
         }}
         loading={userStore.loadingStore.loading}
         loadingIndicator="Подождите..."

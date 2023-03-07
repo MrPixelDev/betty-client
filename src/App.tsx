@@ -54,7 +54,7 @@ function App() {
         //   bgcolor: "white",
         // }}
       >
-        <MainTabs />
+        <MainTabs user={authStore.user} />
         <br />
         <button onClick={() => authStore.logout()}>Выход</button>
         <GetUsers />

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { IUser, TUser } from "../models/IUser";
+import { IUser, IUserRegisterDto, TUser } from "../models/IUser";
 import UsersService from "../services/UsersService";
 import AuthStore from "./authStore";
 import LoadingStore from "./loadingStore";
@@ -38,10 +38,10 @@ export default class UserStore {
   }
 
   // TODO: 401
-  async register(username: string, password: string) {
+  async register(userRegisterDto: IUserRegisterDto) {
     this.loadingStore.setLoading(true);
     try {
-      const response = await UsersService.register({ username, password });
+      const response = await UsersService.register(userRegisterDto);
       if (response.status === 201) {
         this.snackStore.setSnack(
           "success",

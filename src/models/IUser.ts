@@ -1,6 +1,7 @@
 export interface IUser {
   userId: number;
   username: string;
+  role: string;
   banned: Boolean;
   banReason: string;
 }
@@ -15,6 +16,12 @@ export type TUser = {
 export interface IUserAuthDto {
   username: string;
   password: string;
+}
+
+export interface IUserRegisterDto {
+  username: string;
+  password: string;
+  role: string;
 }
 
 export interface IUserApiDto {
