@@ -1,7 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { SiteEnum } from "../models/IAuth";
 import { IUser, TUser } from "../models/IUser";
-import AuthService from "../services/AuthService";
 import UsersService from "../services/UsersService";
 import AuthStore from "./authStore";
 import LoadingStore from "./loadingStore";
@@ -53,7 +51,6 @@ export default class UserStore {
     } catch (e: any) {
       console.log(e);
       console.log(e.response?.data?.message);
-      // this.setError(e.response?.data?.message);
       this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false);

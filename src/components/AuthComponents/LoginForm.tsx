@@ -13,9 +13,16 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { IAuthDto, SiteEnum } from "../../models/IAuth";
+import { SiteEnum } from "../../models/enums";
+import TerminalStore from "../../store/terminalStore";
+import AuthStore from "../../store/authStore";
 
-const LoginForm: FC<IAuthDto> = observer((props) => {
+interface IAuthFormPorps {
+  store: AuthStore | TerminalStore;
+  site: SiteEnum;
+}
+
+const LoginForm: FC<IAuthFormPorps> = observer((props) => {
   const store = props.store;
   const validations = Object.create({ isEmpty: true });
 
@@ -69,7 +76,7 @@ const LoginForm: FC<IAuthDto> = observer((props) => {
           await store.login(username.value, password.value, props.site);
         }}
         loading={
-          props.site
+          props.site !== SiteEnum.MAIN
             ? store.loadingStore.loadingFrom[props.site]
             : store.loadingStore.loading
         }

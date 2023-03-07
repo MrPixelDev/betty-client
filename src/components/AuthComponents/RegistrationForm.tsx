@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import { Context } from "../..";
 import useInput from "../../hooks/useInput";
 import {
@@ -10,16 +10,20 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import useShowPassword from "../../hooks/useShowPassword";
+import { RolesEnum } from "../../models/IUser";
 
 const RegistrationForm: FC = observer(() => {
   const { userStore } = useContext(Context);
 
   const username = useInput("", { isEmpty: true });
   const password = useInput("", { isEmpty: true });
+  const [role, setRole] = useState("");
   const showPassword = useShowPassword(false);
 
   return (
@@ -54,6 +58,29 @@ const RegistrationForm: FC = observer(() => {
           label="Password"
           className="registrationForm__textField"
         />
+      </FormControl>
+      <FormControl
+        variant="standard"
+        sx={{
+          minWidth: "20%",
+        }}
+      >
+        <InputLabel id="role-select">Роль</InputLabel>
+        <Select
+          labelId="role-select"
+          id="role"
+          value={role}
+          onChange={(e) => {
+            setRole(e.target.value);
+          }}
+          label="Роль"
+        >
+          {Object.values(RolesEnum).map((v) => (
+            <MenuItem key={v} value={v}>
+              {v.toUpperCase()}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
       <LoadingButton
         disabled={username.isEmpty || password.isEmpty}

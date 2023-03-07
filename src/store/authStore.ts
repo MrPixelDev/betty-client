@@ -4,8 +4,8 @@ import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
 import AuthService from "../services/AuthService";
 import SnackStore from "./snackStore";
-import { SiteEnum } from "../models/IAuth";
 import LoadingStore from "./loadingStore";
+import { SiteEnum } from "../models/enums";
 import TerminalStore from "./terminalStore";
 
 export default class AuthStore {
@@ -90,14 +90,4 @@ export default class AuthStore {
     }
     this.loadingStore.setLoading(false);
   }
-
-  // closePages() {
-  //   try {
-  //     for (let site of Object.values(SiteEnum)) {
-  //       this.terminalStore.logout(site);
-  //     }
-  //   } catch (e: any) {
-  //     this.snackStore.setSnack("error", e.response?.data?.message);
-  //   }
-  // }
 }

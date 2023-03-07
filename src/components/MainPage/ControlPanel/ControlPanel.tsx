@@ -2,29 +2,14 @@ import { observer } from "mobx-react-lite";
 import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
 import {
   Box,
-  Tabs,
-  Tab,
-  Grid,
   Stack,
   Container,
-  TextField,
   FormControl,
   InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
   SelectChangeEvent,
   Select,
   MenuItem,
 } from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
-  Send,
-  Stop,
-  Pause,
-} from "@mui/icons-material";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import BlockHeader from "../../BlockElements/BlockHeader";
 import ControlButtons from "./ControlButtons";
 import TerminalInfo from "./TerminalInfo";
@@ -42,11 +27,14 @@ const ControlPanel: FC = observer((...props) => {
 
   useEffect(() => {
     return () => {
-      autorun(() => {
-        if (terminalStore.stateDto.bi && terminalStore.stateDto.bk) {
-          terminalStore.getState();
-        }
-      });
+      autorun(
+        () => {
+          if (terminalStore.stateDto.bi && terminalStore.stateDto.bk) {
+            terminalStore.getState();
+          }
+        },
+        { delay: 3000 }
+      );
     };
   }, [terminalStore.stateDto, terminalStore.state.stateId]);
 
@@ -133,6 +121,7 @@ const ControlPanel: FC = observer((...props) => {
             </Container>
           )}
           <br />
+          -------------------------------------
           <TerminalInfo />
         </>
       )}

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { SiteEnum } from "../models/IAuth";
+import { SiteEnum } from "../models/enums";
 import {
   IApiAuthDto,
   IAvailableStrategies,
@@ -109,11 +109,6 @@ export default class TerminalStore {
       const response = await ApiService.getState({ ...this.stateDto });
       console.log(response);
       this.setState(response.data);
-      // await new Promise((res, rej) => {
-      //   setTimeout(() => {
-      //     this.strategyStore.parseStrategies({ ...this.stateDto });
-      //   }, 10000);
-      // });
     } catch (e: any) {
       if (e.response.status !== 429)
         this.snackStore.setSnack("error", e.response?.data?.message);

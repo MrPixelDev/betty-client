@@ -1,27 +1,15 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
+import { FC, useContext, useState } from "react";
 import {
   Box,
-  Tabs,
-  Tab,
   Grid,
-  Stack,
-  Container,
-  TextField,
   FormControl,
   InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
   Select,
   MenuItem,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
-import BlockHeader from "../../BlockElements/BlockHeader";
+import { LoadingButton } from "@mui/lab";
 import { Context } from "../../..";
-import { autorun, toJS } from "mobx";
-import { IAvailableStrategies } from "../../../models/ITerminal";
 
 const ManualSettings: FC = observer((...props) => {
   const { strategyStore } = useContext(Context);

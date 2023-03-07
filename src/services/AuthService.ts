@@ -7,13 +7,6 @@ export default class AuthService {
   static async login(
     userAuthDto: IUserAuthDto
   ): Promise<AxiosResponse<AuthResponse>> {
-    // const hashPW = await this.hashPassword(password);
-    // const hashedPassword = await bcrypt.hash(password, 5);
-    // console.log("login", hashedPassword);
-    // const userAuthDto: IUserAuthDto = {
-    //   username,
-    //   password,
-    // };
     const res = server.post<AuthResponse>("/auth/login", userAuthDto);
     return res;
   }

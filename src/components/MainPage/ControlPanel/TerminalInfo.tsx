@@ -33,31 +33,6 @@ const TerminalInfo: FC = observer((...props) => {
   const [msg, setMsg] = useState<any[]>([]);
   const { terminalStore } = useContext(Context);
 
-  // useEffect(() => {
-  //   console.log(socket.id);
-
-  //   socket.on("connect", () => {
-  //     console.log("Connected!");
-  //   });
-  //   socket.on("login", (data) => {
-  //     console.log(data);
-  //   });
-  //   socket.on("logout", (data) => {
-  //     console.log(data);
-  //   });
-  //   socket.on("getstate", (data) => {
-  //     console.log(data);
-  //   });
-  //   console.log(socket.hasListeners("login"));
-  //   socket.emit("loginnn", "3123123125135135");
-  //   // return () => {
-  //   //   socket.off("connect");
-  //   //   socket.off("login");
-  //   //   socket.off("logout");
-  //   //   socket.off("getstate");
-  //   // };
-  // });
-
   return (
     <Container
       sx={{

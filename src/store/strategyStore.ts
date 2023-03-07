@@ -1,9 +1,8 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { IAvailableStrategies, IGetStateDto } from "../models/ITerminal";
 import ApiService from "../services/ApiService";
 import LoadingStore from "./loadingStore";
 import SnackStore from "./snackStore";
-import TerminalStore from "./terminalStore";
 
 export default class StrategyStore {
   loadingStore = new LoadingStore();

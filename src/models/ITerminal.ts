@@ -1,8 +1,4 @@
-// import { ICipher } from "./IAuth";
-
-import { StringLiteral } from "typescript";
-import { SiteEnum } from "./IAuth";
-import { IUserApiDto } from "./IUser";
+import { SiteEnum } from "./enums";
 
 export interface ITerminalState {}
 

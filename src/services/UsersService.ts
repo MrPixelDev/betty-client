@@ -12,31 +12,6 @@ export default class UsersService {
   static async register(
     userAuthDto: IUserAuthDto
   ): Promise<AxiosResponse<IUser>> {
-    // const userAuthDto: IUserAuthDto = {
-    //   username,
-    //   password,
-    // };
-
     return server.post<IUser>("/users/registration", userAuthDto);
-  }
-
-  static async login(userApiDto: IUserApiDto): Promise<AxiosResponse<any>> {
-    // const hashPW = await this.hashPassword(password);
-    // const userApiDto: IUserApiDto = {
-    //   userId,
-    //   username,
-    //   password,
-    //   site,
-    // };
-    const res = server.post<any>(`/api/login`, userApiDto);
-    return res;
-  }
-
-  static async logout(pageIndex: number): Promise<any> {
-    return server.post<any>(`/api/logout`, { pageIndex });
-  }
-
-  static async checkAuth(): Promise<AxiosResponse<any>> {
-    return server.get<any>("/api/refresh");
   }
 }

@@ -1,24 +1,9 @@
 import { observer } from "mobx-react-lite";
-import io, { Socket } from "socket.io-client";
-import { FC, SyntheticEvent, useContext, useEffect, useState } from "react";
+import { FC, SyntheticEvent, useState } from "react";
 import MainPage from "./MainPage/MainPage";
-import {
-  Box,
-  Tab,
-  Grid,
-  styled,
-  Container,
-  TextField,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { Box, Tab } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import ProfilePage from "./ProfilePage/ProfilePage";
-import { Context } from "..";
 
 const MainTabs: FC = observer((...props) => {
   const [tab, setTab] = useState("main");

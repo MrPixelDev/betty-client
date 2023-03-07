@@ -1,28 +1,7 @@
 import { observer } from "mobx-react-lite";
-import {
-  FC,
-  MouseEventHandler,
-  SyntheticEvent,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Grid,
-  Stack,
-  Container,
-  TextField,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { FC, useContext } from "react";
+import { Stack, Container } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import BlockHeader from "../../BlockElements/BlockHeader";
 import ManualSettings from "./ManualSettings";
 import { Context } from "../../..";
@@ -61,21 +40,6 @@ const ControlPanel: FC = observer((...props) => {
       ) : (
         "Loading"
       )}
-      {/* <Container
-        sx={{
-          textAlign: "right",
-        }}
-      >
-        <LoadingButton
-          disabled={false}
-          onClick={async () => {}}
-          loading={false}
-          loadingIndicator="Создание стратегии"
-          variant="contained"
-        >
-          <span>Создать стратегию</span>
-        </LoadingButton>
-      </Container> */}
     </Stack>
   );
 });

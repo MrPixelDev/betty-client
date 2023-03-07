@@ -24,7 +24,7 @@ const useValidation = (value: any, validations: any) => {
 
   useEffect(() => {
     isEmpty ? setInputValid(false) : setInputValid(true);
-  }, [isEmpty, isEmail]);
+  }, [isEmpty]);
 
   useEffect(() => {
     isEmail ? setInputValid(true) : setInputValid(false);

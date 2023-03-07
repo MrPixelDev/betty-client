@@ -1,15 +1,13 @@
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect, useState } from "react";
-import io, { Socket } from "socket.io-client";
 import { Context } from ".";
 import { Container } from "@mui/material";
 import LoginForm from "./components/AuthComponents/LoginForm";
 import RegistrationForm from "./components/AuthComponents/RegistrationForm";
 import GetUsers from "./components/GetUsers";
-import MainPage from "./components/MainPage/MainPage";
 import useNotistackSnackbar from "./hooks/useNotistackSnackbar";
 import MainTabs from "./components/MainTabs";
-import { SiteEnum } from "./models/IAuth";
+import { SiteEnum } from "./models/enums";
 // import WSService from "./services/WSService";
 
 function App() {
@@ -24,16 +22,7 @@ function App() {
     setAuthChecked(true);
   }, [authStore]);
 
-  // useEffect(() => {
-  //   const handleTabClose = (event: BeforeUnloadEvent) => {
-  //     event.preventDefault();
-  //     authStore.closePages();
-  //     window.alert("SGadgdhdfhgsd");
-  //   };
-
-  //   window.addEventListener("beforeunload", handleTabClose);
-  // });
-
+  // TODO: Loader
   if (!authChecked) {
     return <></>;
   }
@@ -43,10 +32,10 @@ function App() {
       <div className="app">
         <Container
           className="wrapper"
-          sx={{
-            mt: "1rem",
-            bgcolor: "white",
-          }}
+          // sx={{
+          //   mt: "1rem",
+          //   bgcolor: "white",
+          // }}
         >
           <LoginForm store={authStore} site={SiteEnum.MAIN} />
           <br />
@@ -60,10 +49,10 @@ function App() {
     <div className="app">
       <Container
         className="wrapper"
-        sx={{
-          mt: "1rem",
-          bgcolor: "white",
-        }}
+        // sx={{
+        //   mt: "1rem",
+        //   bgcolor: "white",
+        // }}
       >
         <MainTabs />
         <br />

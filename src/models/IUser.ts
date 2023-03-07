@@ -1,5 +1,3 @@
-// import { ICipher } from "./IAuth";
-
 export interface IUser {
   userId: number;
   username: string;
@@ -24,4 +22,10 @@ export interface IUserApiDto {
   username: string;
   password: string;
   site: string;
+}
+
+export enum RolesEnum {
+  ADMIN = "admin",
+  OPERATOR = "operator",
+  USER = "user",
 }

@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { SiteEnum } from "../models/IAuth";
 
 export default class LoadingStore {
   loading = false;

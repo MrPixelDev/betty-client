@@ -1,27 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { FC, SyntheticEvent, useContext, useState } from "react";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Grid,
-  Stack,
-  Container,
-  TextField,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
-  Send,
-  Stop,
-  Pause,
-} from "@mui/icons-material";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { FC, useContext } from "react";
+import { Grid, Container } from "@mui/material";
+import { Send, Stop, Pause } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import { Context } from "../../..";
 
 const ControlButtons: FC = observer((...props) => {
