@@ -64,6 +64,7 @@ export default class AuthStore {
   async logout(site?: SiteEnum) {
     this.loadingStore.setLoading(true);
     try {
+      await this.terminalStore.clearAll();
       this.removeToken();
       this.setAuth(false);
       this.setUser({} as IUser);

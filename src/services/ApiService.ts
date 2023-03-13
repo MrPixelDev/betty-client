@@ -4,9 +4,12 @@ import { AxiosResponse } from "axios";
 import { IUser, IUserApiDto, IUserAuthDto } from "../models/IUser";
 import { ICipher } from "../models/IAuth";
 import {
-  IAvailableStrategies,
+  IAvailableStrategy,
+  IAvailableStrategyModel,
   IGetStateDto,
   IGetStateResponse,
+  IStrategy,
+  IStrategyDto,
 } from "../models/ITerminal";
 
 export default class ApiService {
@@ -29,9 +32,37 @@ export default class ApiService {
     return server.post<any>("/api/getstate", stateDto);
   }
 
-  static async parseStrategies(
-    stateDto: IGetStateDto
-  ): Promise<AxiosResponse<IAvailableStrategies>> {
-    return server.post<any>("/api/parsestrategies", stateDto);
+  static async parseStrategyModel(): Promise<
+    AxiosResponse<IAvailableStrategyModel>
+  > {
+    return server.get<any>("/api/parsestrategymodel");
+  }
+
+  static async createStrategy(
+    strategyDto: IStrategyDto
+  ): Promise<AxiosResponse<any>> {
+    return server.post<any>("/api/createstrategy", strategyDto);
+  }
+
+  static async parseAvailableStrategies(): Promise<
+    AxiosResponse<IAvailableStrategy[]>
+  > {
+    return server.get<any>("/api/getavailablestrategies");
+  }
+
+  static async bindSelectedStrategy(
+    stateId: number,
+    strategy: IStrategyDto
+  ): Promise<AxiosResponse<any>> {
+    return server.put<any>(`/api/bind-strategy/${stateId}`, strategy);
+  }
+
+  static async setStrategyStatus(
+    strategy: IStrategy,
+    status: string
+  ): Promise<AxiosResponse<any>> {
+    return server.put<any>(`/api/set-strategy-status/${strategy.strategyId}`, {
+      status,
+    });
   }
 }

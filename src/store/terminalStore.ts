@@ -1,11 +1,13 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable } from "mobx";
 import { SiteEnum } from "../models/enums";
 import {
   IApiAuthDto,
-  IAvailableStrategies,
+  IAvailableStrategy,
+  IAvailableStrategyModel,
   IGetStateDto,
   IGetStateResponse,
   ISiteContext,
+  IStrategyDto,
 } from "../models/ITerminal";
 import ApiService from "../services/ApiService";
 import LoadingStore from "./loadingStore";
@@ -17,6 +19,7 @@ export default class TerminalStore {
   stateDto = {} as IGetStateDto;
   state = {} as IGetStateResponse;
   currentStrategyId: number = -1;
+  currentStrategyIndex: number = -1;
   // TODO: Erase errors on render iteration
   error = "";
   loadingStore = new LoadingStore();
@@ -31,8 +34,16 @@ export default class TerminalStore {
     makeAutoObservable(this);
   }
 
+  get readyForStateReq() {
+    return Boolean(this.stateDto.bi && this.stateDto.bk);
+  }
+
   setCurrentStrategyId(id: number) {
     this.currentStrategyId = id;
+  }
+
+  setCurrentStrategyIndex(index: number) {
+    this.currentStrategyIndex = index;
   }
 
   setError(error: string) {
@@ -149,12 +160,64 @@ export default class TerminalStore {
     this.removeSiteContext(site);
     this.setStateDto(site);
     this.setState({} as IGetStateResponse);
-    this.strategyStore.setAvailableStrategies({} as IAvailableStrategies);
+    this.strategyStore.setAvailableStrategyModel({} as IAvailableStrategyModel);
     try {
       await ApiService.logout(siteContext.pageIndex);
     } catch (e: any) {
       this.snackStore.setSnack("error", e.response?.data?.message);
     }
     this.loadingStore.setLoading(false, site);
+  }
+
+  async clearAll() {
+    for (let site of Object.values(SiteEnum)) {
+      if (this.siteContext[site]) {
+        await this.logout(site);
+      }
+    }
+    const localState = localStorage.getItem("state");
+    if (localState) {
+      localStorage.removeItem("state");
+    }
+    const localStrategies = localStorage.getItem("availableStrategies");
+    if (localStrategies) {
+      localStorage.removeItem("availableStrategies");
+    }
+    const availableStrategyModel = localStorage.getItem(
+      "availableStrategyModel"
+    );
+    if (availableStrategyModel) {
+      localStorage.removeItem("availableStrategyModel");
+    }
+    this.strategyStore.setAvailableStrategies({} as IAvailableStrategy[]);
+  }
+
+  async bindSelectedStrategy() {
+    this.loadingStore.setLoading(true);
+    try {
+      const strategyDto = {
+        ...this.strategyStore.selectedStrategy,
+      } as IStrategyDto;
+      console.log(strategyDto);
+      await ApiService.bindSelectedStrategy(this.state.stateId, strategyDto);
+      await this.getState();
+    } catch (e: any) {
+      this.snackStore.setSnack("error", e.response?.data?.message);
+    }
+    this.loadingStore.setLoading(false);
+  }
+
+  async setStrategyStatus(status: string) {
+    this.loadingStore.setLoading(true);
+    try {
+      const response = await ApiService.setStrategyStatus(
+        this.state.strategyList[this.currentStrategyIndex],
+        status
+      );
+      await this.getState();
+    } catch (e: any) {
+      this.snackStore.setSnack("error", e.response?.data?.message);
+    }
+    this.loadingStore.setLoading(false);
   }
 }

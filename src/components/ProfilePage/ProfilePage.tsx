@@ -3,7 +3,7 @@ import { FC, useContext } from "react";
 import { Box, Container } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import LoginForm from "../AuthComponents/LoginForm";
-import BlockHeader from "../BlockElements/BlockHeader";
+import BlockHeader from "../BlockElements/HeaderBlock";
 import { Context } from "../..";
 import { SiteEnum } from "../../models/enums";
 

@@ -7,276 +7,130 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
+  Button,
+  Card,
+  Container,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import Carousel from "react-material-ui-carousel";
 import { Context } from "../../..";
+import { IAvailableStrategy } from "../../../models/ITerminal";
+import { CarouselBlock } from "../../BlockElements/CarouselBlock";
+import StrategyStore from "../../../store/strategyStore";
 
 const ManualSettings: FC = observer((...props) => {
-  const { strategyStore } = useContext(Context);
+  const { terminalStore, strategyStore } = useContext(Context);
 
-  const [sportName, setSportName] = useState("");
-  const [league, setLeague] = useState("");
-  const [leagueEvent, setLeagueEvent] = useState("");
-  const [bet, setBet] = useState("");
-  const [obligation, setObligation] = useState("");
-  const [marginality, setMarginality] = useState("");
-  const [stackSize, setStackSize] = useState("");
+  const [strategy, setStrategy] = useState([]);
 
-  const setNull = (n: number) => {
-    const setters = [setBet, setLeagueEvent, setLeague];
-    for (let i = 0; i < n; i++) {
-      setters[i]("");
+  // const setNull = (n: number) => {
+  //   const setters = [setBet, setLeagueEvent, setLeague];
+  //   for (let i = 0; i < n; i++) {
+  //     setters[i]("");
+  //   }
+  // };
+
+  const handleChangeMultiple = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    callback: Function
+  ) => {
+    const { options } = event.target;
+    const value: string[] = [];
+    for (let i = 0, l = options.length; i < l; i += 1) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
     }
+    callback(value);
   };
 
+  interface IItemProps {
+    key: number;
+    item: IAvailableStrategy;
+  }
+
+  const Item: FC<IItemProps> = (props) => {
+    return (
+      <Paper>
+        <h2>{props.item.league}</h2>
+        <p>{props.item.bet}</p>
+
+        <Button className="CheckButton">Check it out!</Button>
+      </Paper>
+    );
+  };
+
+  const sliderItems: number =
+    strategyStore.availableStrategies.length > 3
+      ? 3
+      : strategyStore.availableStrategies.length;
+  const items: Array<any> = [];
+
+  for (
+    let i = 0;
+    i < strategyStore.availableStrategies.length;
+    i += sliderItems
+  ) {
+    if (i % sliderItems === 0) {
+      items.push(
+        strategyStore.availableStrategies.map((item, i) => {
+          return <Item key={i} item={item} />;
+        })
+      );
+    }
+  }
+
   return (
-    <Grid
-      container
-      columns={16}
-      sx={{
-        paddingLeft: 0,
-      }}
-    >
-      <Grid xs={16} md={8} lg={4} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "90%",
-          }}
-        >
-          <InputLabel id="strategyName-label">Вид спорта</InputLabel>
-          <Select
-            labelId="sportName-label"
-            id="sportName"
-            value={sportName}
-            onChange={(e) => {
-              setNull(3);
-              setSportName(e.target.value);
-            }}
-          >
-            {Object.keys(strategyStore.availableStrategies.bets)
-              .filter((v) => {
-                return (
-                  Object.keys(strategyStore.availableStrategies.bets[v])
-                    .length > 0
-                );
-              })
-              .map((v) => (
-                <MenuItem key={v} value={v}>
-                  {v}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid xs={16} md={8} lg={4} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "90%",
-          }}
-        >
-          <InputLabel id="league-label">Лига</InputLabel>
-          <Select
-            disabled={!sportName}
-            labelId="league-label"
-            id="league"
-            value={league}
-            onChange={(e) => {
-              setNull(2);
-              setLeague(e.target.value);
-            }}
-            label="Лига"
-          >
-            {sportName
-              ? Object.keys(
-                  strategyStore.availableStrategies.bets[sportName]
-                ).map((v) => (
-                  <MenuItem key={v} value={v}>
-                    {v}
-                  </MenuItem>
-                ))
-              : ""}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid xs={16} md={16} lg={16} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "95%",
-          }}
-        >
-          <InputLabel id="leagueEvent-label">Событие</InputLabel>
-          <Select
-            disabled={!league}
-            labelId="leagueEvent-label"
-            id="leagueEvent"
-            value={leagueEvent}
-            onChange={(e) => {
-              setNull(1);
-              setLeagueEvent(e.target.value);
-            }}
-            label="Событие"
-          >
-            {league
-              ? Object.keys(
-                  strategyStore.availableStrategies.bets[sportName][league]
-                ).map((v) => (
-                  <MenuItem key={v} value={v}>
-                    {v}
-                  </MenuItem>
-                ))
-              : ""}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid xs={16} md={16} lg={16} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "95%",
-          }}
-        >
-          <InputLabel id="bet-label">Ставка</InputLabel>
-          <Select
-            disabled={!leagueEvent}
-            labelId="bet-label"
-            id="bet"
-            value={bet}
-            onChange={(e) => {
-              setBet(e.target.value);
-            }}
-            label="Ставка"
-          >
-            {leagueEvent
-              ? strategyStore.availableStrategies.bets[sportName][league][
-                  leagueEvent
-                ].map((v) => (
-                  <MenuItem key={v} value={v}>
-                    {v}
-                  </MenuItem>
-                ))
-              : ""}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid xs={16} md={8} lg={4} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "95%",
-          }}
-        >
-          <InputLabel id="marginality-label">Маржинальность</InputLabel>
-          <Select
-            disabled={!bet}
-            labelId="marginality-label"
-            id="marginality"
-            value={marginality}
-            onChange={(e) => {
-              setMarginality(e.target.value);
-            }}
-            label="Маржинальность"
-          >
-            {strategyStore.availableStrategies.marginalitys.map((v) => (
-              <MenuItem key={v} value={v}>
-                {v}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>{" "}
-      <Grid xs={16} md={8} lg={4} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "95%",
-          }}
-        >
-          <InputLabel id="obligation-label">Обязательства</InputLabel>
-          <Select
-            disabled={!bet}
-            labelId="obligation-label"
-            id="obligation"
-            value={obligation}
-            onChange={(e) => {
-              setObligation(e.target.value);
-            }}
-            label="Обязательства"
-          >
-            {strategyStore.availableStrategies.obligations.map((v) => (
-              <MenuItem key={v} value={v}>
-                {v}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>{" "}
-      <Grid xs={16} md={8} lg={4} item={true}>
-        <FormControl
-          variant="standard"
-          sx={{
-            m: 2,
-            minWidth: "95%",
-          }}
-        >
-          <InputLabel id="stackSize-label">Размер стека</InputLabel>
-          <Select
-            disabled={!bet}
-            labelId="stackSize-label"
-            id="stackSize"
-            value={stackSize}
-            onChange={(e) => {
-              setStackSize(e.target.value);
-            }}
-            label="Размер стека"
-          >
-            {strategyStore.availableStrategies.stackSizes.map((v) => (
-              <MenuItem key={v} value={v}>
-                {v}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Box
+    <>
+      {/* <Select multiple value={strategy} onChange={(e) => {}} label="Стратегии">
+        {strategyStore.availableStrategies.map((item, i) => {
+          return <Item key={i} item={item} />;
+        })}
+      </Select> */}
+      <CarouselBlock />
+
+      <Grid
+        container
+        columns={16}
         sx={{
-          m: 3,
-          width: "100%",
-          display: "flex",
-          justifyContent: "space-evenly",
+          paddingLeft: 0,
         }}
       >
-        <LoadingButton
-          disabled={false}
-          onClick={async () => {
-            strategyStore.parseStrategies(strategyStore.stateDto);
+        <Box
+          sx={{
+            m: 3,
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-evenly",
           }}
-          loading={strategyStore.loadingStore.loading}
-          loadingIndicator="Обновление списка..."
-          variant="outlined"
         >
-          <span>Обновить список</span>
-        </LoadingButton>
+          <LoadingButton
+            disabled={false}
+            onClick={async () => {
+              strategyStore.getAvailableStrategies();
+            }}
+            loading={strategyStore.loadingStore.loading}
+            loadingIndicator="Обновление списка..."
+            variant="outlined"
+          >
+            <span>Обновить список</span>
+          </LoadingButton>
 
-        <LoadingButton
-          disabled={false}
-          onClick={async () => {}}
-          loading={false}
-          loadingIndicator="Создание стратегии..."
-          variant="contained"
-        >
-          <span>Создать стратегию</span>
-        </LoadingButton>
-      </Box>
-    </Grid>
+          <LoadingButton
+            disabled={false}
+            onClick={async () => {
+              terminalStore.bindSelectedStrategy();
+            }}
+            loading={false}
+            loadingIndicator="Создание стратегии..."
+            variant="contained"
+          >
+            <span>Получить стратегию</span>
+          </LoadingButton>
+        </Box>
+      </Grid>
+    </>
   );
 });
 

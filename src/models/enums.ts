@@ -4,3 +4,9 @@ export enum SiteEnum {
   FTFSOOBET = "ftfsoobet",
   FONBET = "fonbet",
 }
+
+export enum StrategyStatusEnum {
+  STOPPED = "Stopped",
+  ACTIVE = "Active",
+  PAUSED = "Paused",
+}

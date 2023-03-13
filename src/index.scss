@@ -67,6 +67,28 @@ body {
   }
 }
 
+.carousel-container {
+  .react-multi-carousel-item {
+    padding: 0 1vw;
+    opacity: 0.5;
+    scale: 0.9;
+    & div {
+      text-align: center;
+      background-color: #d0edff;
+    }
+  }
+  .react-multi-carousel-item--active {
+    opacity: 1;
+    scale: 1;
+  }
+  .selected-item {
+    & div {
+      border: 2px solid #5491ba;
+      scale: 0.9;
+    }
+  }
+}
+
 // .btn_container__control {
 //   &--start {
 //     background-color: #fff;

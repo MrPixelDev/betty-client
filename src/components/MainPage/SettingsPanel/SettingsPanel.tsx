@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { Stack, Container } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import BlockHeader from "../../BlockElements/BlockHeader";
+import BlockHeader from "../../BlockElements/HeaderBlock";
 import ManualSettings from "./ManualSettings";
 import { Context } from "../../..";
 
@@ -14,7 +14,7 @@ const ControlPanel: FC = observer((...props) => {
       <BlockHeader title="Настройки терминала" />
 
       {!strategyStore.loadingStore.loading ? (
-        strategyStore.availableStrategies.bets ? (
+        strategyStore.availableStrategies.length ? (
           <ManualSettings />
         ) : terminalStore.state.stateId ? (
           <Container
@@ -25,20 +25,20 @@ const ControlPanel: FC = observer((...props) => {
             <LoadingButton
               disabled={false}
               onClick={async () => {
-                await strategyStore.parseStrategies(terminalStore.stateDto);
+                strategyStore.parseAvailableStrategies();
               }}
               loading={strategyStore.loadingStore.loading}
               loadingIndicator="Парсинг событий..."
               variant="outlined"
             >
-              <span>Создать стратегию</span>
+              <span>Показать доступные стратегии</span>
             </LoadingButton>
           </Container>
         ) : (
           "Авторизуйтесь в сервисах"
         )
       ) : (
-        "Loading"
+        "Loading..."
       )}
     </Stack>
   );

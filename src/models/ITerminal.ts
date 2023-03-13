@@ -1,4 +1,4 @@
-import { SiteEnum } from "./enums";
+import { SiteEnum, StrategyStatusEnum } from "./enums";
 
 export interface ITerminalState {}
 
@@ -35,7 +35,7 @@ export interface IStock {
 export interface IStrategy {
   strategyId: number;
   strategyName: string;
-  status: number;
+  status: string;
   sportName: string;
   league: string;
   leagueEvent: string;
@@ -47,6 +47,16 @@ export interface IStrategy {
   stock: IStock[];
 }
 
+export interface IStrategyDto {
+  strategyName: string;
+  sportName: string;
+  league: string;
+  bet: string;
+  marginality: number;
+  obligation: number;
+  stackSize: number;
+}
+
 export interface IGetStateResponse {
   stateId: number;
   strategyList: IStrategy[];
@@ -56,15 +66,33 @@ export interface IGetStateResponse {
   profit: number;
 }
 
-export interface IAvailableStrategies {
-  bets: {
+export interface IAvailableStrategyModel {
+  leagues: {
     [sportName: string]: {
       [league: string]: {
         [leagueEvent: string]: string[];
       };
     };
   };
+  betList: string[];
   marginalitys: number[];
   obligations: number[];
   stackSizes: number[];
 }
+
+export interface IAvailableStrategy extends IStrategyDto {
+  availableStrategyId: number;
+}
+
+// export interface IAvailableStrategies {
+//   bets: {
+//     [sportName: string]: {
+//       [league: string]: {
+//         [leagueEvent: string]: string[];
+//       };
+//     };
+//   };
+//   marginalitys: number[];
+//   obligations: number[];
+//   stackSizes: number[];
+// }

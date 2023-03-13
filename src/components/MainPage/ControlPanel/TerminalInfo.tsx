@@ -25,7 +25,7 @@ import {
 import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { Context } from "../../..";
 import { autorun } from "mobx";
-import BlockHeader from "../../BlockElements/BlockHeader";
+import BlockHeader from "../../BlockElements/HeaderBlock";
 // import { WebSocketContext } from "../../../services/WSService";
 // import socket from "../../../services/WSService";
 

@@ -4,6 +4,7 @@ import { Grid, Container } from "@mui/material";
 import { Send, Stop, Pause } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Context } from "../../..";
+import { StrategyStatusEnum } from "../../../models/enums";
 
 const ControlButtons: FC = observer((...props) => {
   const { terminalStore } = useContext(Context);
@@ -25,7 +26,15 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
-            disabled={terminalStore.currentStrategyId === -1}
+            disabled={
+              terminalStore.currentStrategyIndex === -1 ||
+              terminalStore.state.strategyList[
+                terminalStore.currentStrategyIndex
+              ].status === StrategyStatusEnum.ACTIVE
+            }
+            onClick={() =>
+              terminalStore.setStrategyStatus(StrategyStatusEnum.ACTIVE)
+            }
             endIcon={<Send />}
             loadingPosition={"end"}
             variant="contained"
@@ -46,7 +55,15 @@ const ControlButtons: FC = observer((...props) => {
           }}
         >
           <LoadingButton
-            disabled={terminalStore.currentStrategyId === -1}
+            disabled={
+              terminalStore.currentStrategyIndex === -1 ||
+              terminalStore.state.strategyList[
+                terminalStore.currentStrategyIndex
+              ].status === StrategyStatusEnum.STOPPED
+            }
+            onClick={() =>
+              terminalStore.setStrategyStatus(StrategyStatusEnum.STOPPED)
+            }
             endIcon={<Stop />}
             loadingPosition={"end"}
             variant="contained"
@@ -57,7 +74,15 @@ const ControlButtons: FC = observer((...props) => {
         </Grid>
         <Grid item={true} xs={12} md={6}>
           <LoadingButton
-            disabled={terminalStore.currentStrategyId === -1}
+            disabled={
+              terminalStore.currentStrategyIndex === -1 ||
+              terminalStore.state.strategyList[
+                terminalStore.currentStrategyIndex
+              ].status !== StrategyStatusEnum.ACTIVE
+            }
+            onClick={() =>
+              terminalStore.setStrategyStatus(StrategyStatusEnum.PAUSED)
+            }
             endIcon={<Pause />}
             loadingPosition={"end"}
             variant="contained"
